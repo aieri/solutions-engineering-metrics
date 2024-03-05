@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Calculate query
         shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pulse_start=$(date -d "1 fortnight ago" +%Y-%m-%d)
           today=$(date +%Y-%m-%d)
