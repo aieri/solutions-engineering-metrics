@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Calculate beginning of pulse
+      - name: Calculate query
         shell: bash
         run: |
           pulse_start=$(date -d "1 fortnight ago" +%Y-%m-%d)
@@ -21,13 +21,16 @@ jobs:
           range="$pulse_start..$today"
           query="type:pr $repos created:$range"
 
+          echo "$query"
           echo "query=$query" >> "$GITHUB_ENV"
+          echo "range=$range" >> "$GITHUB_ENV"
 
       - name: Get issue metrics
         uses: github/issue-metrics@v2
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SEARCH_QUERY: '${{ env.query }}'
+          HIDE_TIME_TO_ANSWER: 'true'
 
       - name: Create issue
         uses: peter-evans/create-issue-from-file@v5
