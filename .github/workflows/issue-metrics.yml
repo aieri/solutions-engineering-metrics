@@ -17,9 +17,19 @@ jobs:
         run: |
           pulse_start=$(date -d "1 fortnight ago" +%Y-%m-%d)
           today=$(date +%Y-%m-%d)
-          repos='repo:canonical/charmed-openstack-upgrader repo:canonical/hardware-observer-operator repo:canonical/snap-tempest'
+          team='canonical/soleng-reviewers'
+          teammembers=$(gh api /orgs/canonical/teams/solutions-engineering/members | jq -r '.[].login')
+
+          reviewedby=''
+          reviewrequested=''
+          teamreviewrequested='team-review-requested:canonical/soleng-reviewers'
+
+          for member in $teammembers:
+            reviewedby="$reviewedby reviewed-by:$member"
+            reviewrequested="$reviewrequested review-requested:$member"
+
           range="$pulse_start..$today"
-          query="type:pr $repos created:$range"
+          query="type:pr $reviewedby $reviewrequested $teamreviewrequested created:$range"
 
           echo "$query"
           echo "query=$query" >> "$GITHUB_ENV"
