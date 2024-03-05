@@ -17,15 +17,17 @@ jobs:
         run: |
           pulse_start=$(date -d "1 fortnight ago" +%Y-%m-%d)
           today=$(date +%Y-%m-%d)
+          repos='repo:canonical/charmed-openstack-upgrader repo:canonical/hardware-observer-operator repo:canonical/snap-tempest'
+          range="$pulse_start..$today"
+          query="type:pr $repos created:$range"
 
-          echo "range=$pulse_start..$today" >> "$GITHUB_ENV"
-          echo "repos='repo:canonical/charmed-openstack-upgrader repo:canonical/hardware-observer-operator repo:canonical/snap-tempest'" >> "$GITHUB_ENV"
+          echo "query=$query" >> "$GITHUB_ENV"
 
       - name: Get issue metrics
         uses: github/issue-metrics@v2
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SEARCH_QUERY: 'type:pr ${{ env.repos }} created:${{ env.range }}'
+          SEARCH_QUERY: '${{ env.query }}'
 
       - name: Create issue
         uses: peter-evans/create-issue-from-file@v5
