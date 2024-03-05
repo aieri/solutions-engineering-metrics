@@ -32,7 +32,7 @@ jobs:
           done
 
           range="$pulse_start..$today"
-          query="type:pr $reviewedby $reviewrequested $teamreviewrequested created:$range"
+          query="type:pr org:canonical $reviewedby $reviewrequested $teamreviewrequested created:$range"
 
           echo "$query"
           echo "query=$query" >> "$GITHUB_ENV"
