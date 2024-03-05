@@ -1,0 +1,36 @@
+name: Per-pulse issue metrics (Multi Repo)
+on:
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: read
+
+jobs:
+  build:
+    name: issue metrics
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Calculate beginning of pulse
+        shell: bash
+        run: |
+          pulse_start=$(date -d "1 fortnight ago" +%Y-%m-%d)
+          today=$(date +%Y-%m-%d)
+
+          echo "range=$pulse_start..$today" >> "$GITHUB_ENV"
+          echo "repos='repo:canonical/charmed-openstack-upgrader repo:canonical/hardware-observer-operator repo:canonical/snap-tempest'" >> "$GITHUB_ENV"
+
+      - name: Get issue metrics
+        uses: github/issue-metrics@v2
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SEARCH_QUERY: 'type:pr ${{ env.repos }} created:${{ env.range }}'
+
+      - name: Create issue
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: 'Issue metrics report (${{ env.range }})'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          content-filepath: ./issue_metrics.md
+          assignees: aieri
