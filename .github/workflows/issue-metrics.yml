@@ -22,17 +22,14 @@ jobs:
           team='canonical/soleng-reviewers'
           teammembers=$(gh api /orgs/canonical/teams/solutions-engineering/members | jq -r '.[].login')
 
-          reviewedby=''
-          reviewrequested=''
-          teamreviewrequested='team-review-requested:canonical/soleng-reviewers'
+          author=''
 
           for member in $teammembers; do
-            reviewedby="$reviewedby reviewed-by:$member"
-            reviewrequested="$reviewrequested review-requested:$member"
+            author="$author author:$member"
           done
 
           range="$pulse_start..$today"
-          query="type:pr org:canonical $reviewedby $reviewrequested $teamreviewrequested created:$range"
+          query="type:pr org:canonical $author created:$range"
 
           echo "$query"
           echo "query=$query" >> "$GITHUB_ENV"
