@@ -29,7 +29,7 @@ jobs:
           done
 
           range="$pulse_start..$today"
-          query="type:pr org:canonical $author created:$range"
+          query="type:pr org:canonical $author closed:$range"
 
           echo "$query"
           echo "query=$query" >> "$GITHUB_ENV"
