@@ -36,7 +36,7 @@ jobs:
           echo "range=$range" >> "$GITHUB_ENV"
 
       - name: Get issue metrics
-        uses: github/issue-metrics@v2
+        uses: aieri/issue-metrics@prs_metrics
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SEARCH_QUERY: '${{ env.query }}'
